@@ -1,0 +1,21 @@
+<!DOCTYPE html> 
+<html>
+    <body>
+        
+        {{if .Email}}
+        <p>You have already logged in with email {{.Email}}. Wanna go to <a href="/index">Home</a>?</p>
+        <button onclick="document.location='/logout'">Log Out</button>
+        {{else}}
+        <form method="post">
+            <label for="email">Email:</label> <br>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label> <br>
+            <input type="password" id="password" name="password"><br>
+            <input type="submit" name="login" value="Sign in"><br>
+        </form>
+            {{if .Response}}
+            <p>{{.Response}}</p>
+            {{end}}
+        {{end}}
+    </body>
+</html>

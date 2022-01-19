@@ -1,0 +1,17 @@
+<!DOCTYPE html> 
+<html>
+    <body>
+        <form action="/register" method="POST">
+            <label for="email">Email:</label> <br>
+            <input type="text" id="email" name="email"><br>
+            <label for="name">Name:</label> <br>
+            <input type="text" id="name" name="name"> <br>
+            <label for="password">Password:</label> <br>
+            <input type="password" id="password" name="password"><br>
+            <input type="submit" name="signup" value="Sign up"><br>
+        </form>
+        {{if .Response}}
+        <p>{{.Response}}</p>
+        {{end}}
+    </body>
+</html>

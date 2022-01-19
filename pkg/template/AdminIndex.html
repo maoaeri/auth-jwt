@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+        {{range .}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.Email}}</td>
+        </tr>
+       {{end}}
+    </table>
+    <button onclick="document.location='/logout'">Log Out</button>
+</html>
