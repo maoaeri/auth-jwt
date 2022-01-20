@@ -12,6 +12,9 @@
         </form>
         {{if .Response}}
         <p>{{.Response}}</p>
+        {{if .success}}
+        <button onclick="document.location='/login'">Log in</button>
+        {{end}}
         {{end}}
     </body>
 </html>

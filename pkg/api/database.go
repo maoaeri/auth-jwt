@@ -124,7 +124,7 @@ func DeleteAllUsers() {
 
 	result := connection.Delete(&users)
 	if result.Error != nil {
-		log.Fatalln("Error in deleting user.")
+		log.Fatalln("Error in deleting users.")
 	}
 }
 

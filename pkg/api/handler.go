@@ -34,6 +34,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			res := "Email already in use"
 			responseMap["Response"] = res
+			responseMap["success"] = false
 		} else {
 			user.Password = helper.GenerateHash(user.Password)
 			result := connection.Create(&user)
@@ -42,7 +43,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 				fmt.Print(result.Error)
 			}
 			responseMap["Response"] = "Successfully registered"
-			if err := connection.Model(&dbuser).Update("role", "user"); err != nil {
+			responseMap["success"] = true
+			if err := connection.Model(&user).Update("role", "user"); err != nil {
 				fmt.Print("Error in setting role for user.")
 				fmt.Print(err)
 			}
@@ -110,11 +112,6 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("../pkg/template/login.html"))
 	tmpl.Execute(w, responseMaps)
 
-	/*var token model.Token
-	token.Email = authuser.Email
-	token.Role = authuser.Role
-	token.TokenString = validToken
-	helper.RespondJSON(w, http.StatusOK, token)*/
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
@@ -123,6 +120,7 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 		MaxAge: -1,
 	}
 	http.SetCookie(w, &cookie)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

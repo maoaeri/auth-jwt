@@ -1,6 +1,7 @@
 package api
 
 import (
+	"html/template"
 	"log"
 	"myapp/pkg/middleware"
 	"net/http"
@@ -19,6 +20,10 @@ func InitRouter() {
 	router.HandleFunc("/login", LogIn)                          //.Methods("POST")
 	router.HandleFunc("/index", middleware.IsAuthorized(Index)) //.Methods("GET")
 	router.HandleFunc("/logout", LogOut)
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("../pkg/template/Home.html"))
+		tmpl.Execute(w, true)
+	})
 }
 
 func Run() {
