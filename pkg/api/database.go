@@ -102,7 +102,7 @@ func GetUser(email string) (user model.User) {
 	return user
 }
 
-func DeleteUser(email string) {
+func DeleteUser(email string) error {
 	connection := GetDB()
 	defer CloseDB(connection)
 
@@ -111,11 +111,12 @@ func DeleteUser(email string) {
 
 	result := connection.Delete(&user)
 	if result.Error != nil {
-		log.Fatalln("Error in deleting user.")
+		return result.Error
 	}
+	return nil
 }
 
-func DeleteAllUsers() {
+func DeleteAllUsers() error {
 	connection := GetDB()
 	defer CloseDB(connection)
 
@@ -124,8 +125,9 @@ func DeleteAllUsers() {
 
 	result := connection.Delete(&users)
 	if result.Error != nil {
-		log.Fatalln("Error in deleting users.")
+		return result.Error
 	}
+	return nil
 }
 
 /*func CheckDuplicateEmail(email string) (bool, error) {

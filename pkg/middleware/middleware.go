@@ -26,9 +26,15 @@ func IsAuthorized(handler http.HandlerFunc) http.HandlerFunc {
 			return Key, nil
 		})
 
-		if err != nil {
-			helper.RespondError(w, http.StatusUnauthorized, "Token expired")
-			return
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				helper.RespondError(w, http.StatusUnauthorized, "That's not even a token")
+			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+				// Token is either expired or not active yet
+				helper.RespondError(w, http.StatusUnauthorized, "Token Expired")
+			} else {
+				helper.RespondJSON(w, http.StatusInternalServerError, err)
+			}
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

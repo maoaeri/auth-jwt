@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
 
@@ -124,8 +125,8 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	connection := GetDB()
-	defer CloseDB(connection)
+	//connection := GetDB()
+	//defer CloseDB(connection)
 
 	role := r.Header.Get("Role")
 	if role == "admin" {
@@ -142,6 +143,39 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 		user := GetUser(userEmail)
 		tmpl.Execute(w, user)
+	} else {
+		helper.RespondError(w, http.StatusUnauthorized, "You have to log in first")
+	}
+}
+
+func DeleteAllUsersHandler(w http.ResponseWriter, r *http.Request) {
+	role := r.Header.Get("Role")
+	if role == "admin" {
+		err := DeleteAllUsers()
+		if err != nil {
+			helper.RespondError(w, http.StatusInternalServerError, "Error in deleting users.")
+			return
+		}
+		helper.RespondJSON(w, http.StatusAccepted, "All users deleted.")
+	} else {
+		helper.RespondError(w, http.StatusUnauthorized, "You're not admin.")
+	}
+}
+
+func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	email, _ := params["email"]
+
+	role := r.Header.Get("Role")
+	if role == "admin" {
+		err := DeleteUser(email)
+		if err != nil {
+			helper.RespondError(w, http.StatusInternalServerError, "Error in deleting user.")
+			return
+		}
+		helper.RespondJSON(w, http.StatusAccepted, "User deleted.")
+	} else {
+		helper.RespondError(w, http.StatusUnauthorized, "You're not admin.")
 	}
 }
 

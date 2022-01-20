@@ -24,6 +24,8 @@ func InitRouter() {
 		tmpl := template.Must(template.ParseFiles("../pkg/template/Home.html"))
 		tmpl.Execute(w, true)
 	})
+	router.HandleFunc("/deleteall", middleware.IsAuthorized(DeleteAllUsersHandler))  //.Methods("DELETE")
+	router.HandleFunc("/delete/{email}", middleware.IsAuthorized(DeleteUserHandler)) //.Methods("DELETE")
 }
 
 func Run() {
